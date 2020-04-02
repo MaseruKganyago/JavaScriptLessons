@@ -1,17 +1,7 @@
-const object = name => {
-  const obj = {};
-  obj.name = name;
-  obj.greeting = function greeting() {
-    console.log(`Hi my Name is ${obj.name}`);
-  };
-
-  return obj;
-};
-
 function Person(Name, LastName, Age, Gender, Interests) {
   this.name = {
-    Name,
-    LastName
+    first: Name,
+    last: LastName
   };
   this.age = Age;
   this.gender = Gender;
@@ -19,7 +9,8 @@ function Person(Name, LastName, Age, Gender, Interests) {
 }
 
 Person.prototype.bio = function() {
-  let string = `${this.name.Name} ${this.name.LastName} is ${this.age} years old.`;
+  const { first, last } = this.name;
+  let string = first + ' ' + last + ' is ' + this.age + ' years old. ';
 
   let pronoun;
 
@@ -76,7 +67,7 @@ Object.defineProperty(Teacher.prototype, "constructor", {
   writable: true
 });
 
-let Mr_Kganyago = new Person("Maseru", "Kganyago", 20, 'Male', ['Code', 'Movies']);
-console.log(Mr_Kganyago.name.Name)
+let Mr_Kganyago = new Teacher("Maseru", "Kganyago", 20, 'Male', ['Code', 'Movies'], 'Web Development');
+console.log(Mr_Kganyago.name.first)
 
-console.log(Person.prototype.bio());
+console.log(Mr_Kganyago.bio());

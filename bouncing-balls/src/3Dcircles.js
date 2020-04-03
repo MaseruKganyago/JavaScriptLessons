@@ -1,3 +1,9 @@
+
+const random = (min, max) => {
+  const num = Math.floor(Math.random() * (max - min + 1)) + min;
+  return num;
+};
+
 function Ball(x, y, velX, velY, color, size, ctx, width, height) {
   this._x = x;
   this._y = y;
@@ -38,6 +44,20 @@ Ball.prototype.update = function() {
   this._y += this._velY;
 };
 
+Ball.prototype.collisionDetect = function(array) {
+  for (let j = 0; j < array.length; j++) {
+    if (this !== array[j]) {
+      const dx = this._x - array[j]._x;
+      const dy = this._y - array[j]._y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < this._size + array[j]._size) {
+
+        array[j]._color = this._color = 'rgb(' + random(0, 255)  + random(0, 255) + ',' + random(0, 255) + ',' + random(0, 255) +')';
+    }
+  }
+}
+}
 
 
 export default Ball;

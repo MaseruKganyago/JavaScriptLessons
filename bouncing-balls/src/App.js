@@ -1,8 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
-import Ball from "./3Dcircles";
+import { Ball, EvilCircle } from "./3Dcircles";
+
+const random = (min, max) => {
+  const num = Math.floor(Math.random() * (max - min + 1)) + min;
+  return num;
+};
 
 function App() {
+  const [count, setCount] = useState(0);
   const handleClick = () => {
     const canvas = document.querySelector("canvas");
 
@@ -10,23 +16,26 @@ function App() {
 
     const width = (canvas.width = window.innerWidth);
     const height = (canvas.height = window.innerHeight);
-
-    const random = (min, max) => {
-      const num = Math.floor(Math.random * (max - min + 1) + min);
-      return num;
-    }
+    console.log("width", width);
 
     let balls = [];
-    while(balls.length < 25) {
+    while (balls.length < 25) {
       let size = random(10, 20);
       let ball = new Ball(
-        random(size, width - size),
-        random(size, height - size),
+        random(0 + size, width - size),
+        random(0 + size, height - size),
         random(-10, 10),
         random(-10, 10),
-        'rgb(' + random(0,255) + ',' + random(0,255) + ',' + random(0,255) +')',
-        size,
+        true,
         context,
+        "rgb(" +
+          random(0, 255) +
+          "," +
+          random(0, 255) +
+          "," +
+          random(0, 255) +
+          ")",
+        size,
         width,
         height
       );
@@ -34,16 +43,30 @@ function App() {
       balls.push(ball);
     }
 
+    let size = 10;
+    const player = new EvilCircle(
+      random(0 + size, width - size),
+      random(0 + size, height - size),
+      true,
+      context,
+      width,
+      height
+    );
+
     const loop = () => {
-      context.fillStyle = 'rgba(0, 0, 0, 0.25)';
+      context.fillStyle = "rgba(0, 0, 0, 0.25)";
       context.fillRect(0, 0, width, height);
-      console.log(balls.length)
-      for(let i = 0; i < balls.length; i++) {
+      player.draw();
+      player.checkBounds();
+      player.setControls();
+      setCount(player.vanisher(balls));
+      for (let i = 0; i < balls.length; i++) {
         balls[i].draw();
         balls[i].update();
+        balls[i].collisionDetect(balls);
       }
       requestAnimationFrame(loop);
-    }
+    };
 
     loop();
   };
@@ -51,12 +74,12 @@ function App() {
   return (
     <div className="App">
       <h1>Bouncing Balls</h1>
-      <button onClick={() => handleClick()}>Run</button>
+      <p>Ball count: {count} </p>
+      <button onClick={handleClick}>Run</button>
       <div>
         <canvas></canvas>
       </div>
     </div>
   );
 }
-
 export default App;

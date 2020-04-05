@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
 import { Ball, EvilCircle } from "./3Dcircles";
 
@@ -8,6 +8,7 @@ const random = (min, max) => {
 };
 
 function App() {
+  const [count, setCount] = useState(0);
   const handleClick = () => {
     const canvas = document.querySelector("canvas");
 
@@ -58,7 +59,7 @@ function App() {
       player.draw();
       player.checkBounds();
       player.setControls();
-      player.vanisher(balls);
+      setCount(player.vanisher(balls));
       for (let i = 0; i < balls.length; i++) {
         balls[i].draw();
         balls[i].update();
@@ -73,13 +74,10 @@ function App() {
   return (
     <div className="App">
       <h1>Bouncing Balls</h1>
-      <p>Ball count: </p>
+      <p>Ball count: {count} </p>
       <button onClick={handleClick}>Run</button>
       <div>
-        <canvas>
-          <h1>Bouncing Balls</h1>
-          <p>Ball count: </p>
-        </canvas>
+        <canvas></canvas>
       </div>
     </div>
   );

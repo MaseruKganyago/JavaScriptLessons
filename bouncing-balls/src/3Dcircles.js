@@ -101,15 +101,16 @@ export class EvilCircle extends Shape {
   }
 
   setControls() {
+    let holder = this
     window.onkeydown = (e) => {
       if(e.key === 'a') {
-        this._x -= this._velX;
+        holder._x -= holder._velX;
       } else if (e.key === 'd') {
-        this._x += this._velX;
+        holder._x += holder._velX;
       } else if(e.key === 'w') {
-        this._y -= this._velY;
+        holder._y -= holder._velY;
       } else if(e.key === 's') {
-        this._y += this._velY;
+        holder._y += holder._velY;
       }
     }
   }
@@ -121,11 +122,14 @@ export class EvilCircle extends Shape {
         const dy = this._y - array[m]._y;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
-        if(distance < this._x + this._size) {
+        if(distance < this._size + array[m]._size) {
+          console.log('check')
           array[m].exists = false;
-          //array.splice(m, 1);
+          array.splice(m, 1);
         }
       }
     }
+
+    return array.length;
   }
 }

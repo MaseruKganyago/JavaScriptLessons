@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import "./App.css";
 
-interface TimeArg {
-  hour?: number;
-  min?: number;
-  sec?: number;
-}
-
 function App() {
-  const [time, setTime] = useState<TimeArg>({ hour: 0, min: 0, sec: 0 });
+  const [time, setTime] = useState({ hour: 0, min: 0, sec: 0 });
+  const [prefix, setPrefix] = useState({
+    prefixHour: "0",
+    prefixMin: "0",
+    prefixSec: "0",
+  });
   const [state, setState] = useState(false);
-  const [watch, setWatch] = useState<NodeJS.Timeout>(); // Try to use states instead of global variables, 
+  const [watch, setWatch] = useState<NodeJS.Timeout>(); // Try to use states instead of global variables,
   // because When you use a global variable the only thing that changes is the value of the variable.
   // But when you use a state it causes React to re-render so your variable change can be viewed on the DOM.
   let initial: number;
@@ -20,15 +19,26 @@ function App() {
     let millSeconds = Date.now() - initial;
     const seconds = Math.round(millSeconds / 1000);
     setTime({ hour: 0, min: 0, sec: seconds });
-
-    if(seconds > 60) {
-      minutes = Math.round(millSeconds / 60000);
-    setTime({ hour: 0, min: minutes, sec: seconds % 60});
+    if (seconds >= 10) {
+      setPrefix({ prefixHour: "0", prefixMin: "0", prefixSec: "" });
     }
-    
-    if(minutes > 60) {
+
+    if (seconds > 60) {
+      minutes = Math.round(millSeconds / 60000);
+      setTime({ hour: 0, min: minutes, sec: seconds % 60 });
+
+      if (minutes >= 10) {
+        setPrefix({ prefixHour: "0", prefixMin: "", prefixSec: "0" });
+      }
+    }
+
+    if (minutes > 60) {
       const hours = Math.round(millSeconds / 3600000);
       setTime({ hour: hours, min: minutes % 60, sec: seconds });
+
+      if (hours >= 10) {
+        setPrefix({ prefixHour: "", prefixMin: "0", prefixSec: "0" });
+      }
     }
   }
 
@@ -42,7 +52,7 @@ function App() {
   const stopWatch = () => {
     console.log("stop");
     if (watch) {
-      clearInterval(watch);  //To avoid typescript 'value undefined or value null' erro, try to us if-statements
+      clearInterval(watch); //To avoid typescript 'value undefined or value null' erro, try to us if-statements
     }
   };
 
@@ -63,7 +73,10 @@ function App() {
 
       <div className="time">
         <p>
-          0{time.hour}:0{time.min}:0{time.sec}
+          {prefix.prefixHour}
+          {time.hour}:{prefix.prefixMin}
+          {time.min}:{prefix.prefixSec}
+          {time.sec}
         </p>
         <button disabled={state} onClick={(e) => runWatch(e)}>
           Start
